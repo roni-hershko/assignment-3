@@ -4,7 +4,7 @@ import bgu.spl.net.api.MessageEncoderDecoder;
 
 public class TftpEncoderDecoder implements MessageEncoderDecoder<byte[]> {
     
-    private byte[] bytes = new byte[1 << 10]; //start with 512
+    private byte[] bytes = new byte[1 << 10]; 
     private int len = 0;
     private final int packetSize = 512;
     private int stopValue = packetSize;

@@ -4,8 +4,6 @@ import bgu.spl.net.api.BidiMessagingProtocol;
 import bgu.spl.net.srv.BlockingConnectionHandler;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +32,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
 
     public TftpProtocol(){
 		//insert all the files from the flies folder in the server into the fileMap
-		String folderPath = "server/Flies/";
+		String folderPath = "Flies" + File.separator;
 		File folder = new File(folderPath);
         File[] files = folder.listFiles();
 		ConcurrentHashMap<String, File> filesMap = new ConcurrentHashMap<>(); 
@@ -51,8 +49,6 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
 
     @Override
     public void start(int connectionId, Connections<byte[]> connections) {
-	//Used to initiate the current client protocol with it's personal connection ID and the connections implementation
-	//Initiate the protocol with the active connections structure of the server and saves the owner client’s connection id
 		this.connectionId = connectionId;
 		this.connections = connections;
 
@@ -132,7 +128,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
         
         //convert the byte array to a string
         String fileName = new String(message, 1, message.length -1, StandardCharsets.UTF_8);
-		String folderPath = "server/Flies/";	
+		String folderPath = "Flies" + File.separator;	
 		Path filePath = Paths.get(folderPath,fileName);
 		if(Files.exists(filePath)){
 			fileFound = true;
@@ -165,7 +161,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
         }
 		String fileName = new String(message, 1, message.length -1, StandardCharsets.UTF_8);
 		fileNameString = fileName;
-		String folderPath = "server/Flies/";	
+		String folderPath = "Flies" + File.separator;	
 		Path filePath = Paths.get(folderPath,fileName);
 		if(Files.exists(filePath)){
 			errNum = 5;
@@ -189,7 +185,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
 
     private void threeDATARecive(byte[] message){ 
 		short DATAblockNum = byteToShort(message, 3,4);
-		String folderPath = "server/Flies/";	
+		String folderPath = "Flies" + File.separator;	
 		Path filePath = Paths.get(folderPath, fileNameString);
 		
 		for(int i = 5; i < message.length; i++){
@@ -199,7 +195,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
 		connections.send(connectionId, ACKSend(DATAblockNum));
 
         if(message.length < packetSize){ 
-			try { //this part you need to add to adter line 66
+			try { 
 				byte[] fileBytes = new byte[dataToSave.size()];
 				for (int i = 0; i < dataToSave.size(); i++) {
 					fileBytes[i] = dataToSave.get(i);
@@ -207,7 +203,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
 				Files.write(filePath, fileBytes);
 				dataToSave.clear();
 				Holder.fileMap.put(fileNameString, new File(folderPath, fileNameString));
-				nineSendBroadcast( fileNameString.getBytes() ,1); //check
+				nineSendBroadcast( fileNameString.getBytes() ,1);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -292,7 +288,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
                     Holder.fileMap.remove(key);
                     fileFound = true;
 					//delete the file from the server
-					File file = new File("server/Flies/"+fileName);
+					File file = new File("Flies" + File.separator+fileName);
 					file.delete();
 
                     break; // Exit the loop once the file is found
@@ -433,7 +429,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
     }
 
 
-    private byte[] DATASend(short blockNum, byte[] data , int indexData){//check
+    private byte[] DATASend(short blockNum, byte[] data , int indexData){
         //create data packet in the size of the packet remain to send
         int dataSectionSize = Math.min(packetSize, data.length - indexData);
         byte[] dataPacket = new byte[dataSectionSize + 6];

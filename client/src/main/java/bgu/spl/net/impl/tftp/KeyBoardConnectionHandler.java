@@ -37,10 +37,6 @@ public class KeyBoardConnectionHandler implements Runnable {
         }
         catch (IOException e) {
             e.printStackTrace();
-        }
-						
+        }			
 	}
-				
-    
-    
 }

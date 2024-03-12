@@ -59,7 +59,6 @@ public class BlockingConnectionHandlerClient implements Runnable {
             e.printStackTrace();
         }
     }
-
 }
 
 

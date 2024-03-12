@@ -2,14 +2,11 @@ package bgu.spl.net.impl.tftp;
 import bgu.spl.net.api.MessagingProtocol;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,13 +83,13 @@ public class TftpProtocol implements MessagingProtocol<byte[]>{
         {
             waitingForDirq = false;
             if(waitingForUpload){
-                File file = new File("client/"+fileNameToUpload);
+                File file = new File("." + File.separator + fileNameToUpload);
                 file.delete();
             }
             waitingForUpload = false;
             blockNum = 0;
             if(waitingForData){
-                File file = new File("client/"+fileNameToDownload);
+                File file = new File("." + File.separator+fileNameToDownload);
                 file.delete();
             }
             waitingForData = false;
@@ -239,7 +236,7 @@ public class TftpProtocol implements MessagingProtocol<byte[]>{
 
     public void createFile(){
 
-        String directoryPath = "client/";
+        String directoryPath = "." + File.separator;
         File file = new File(directoryPath + fileNameToDownload);
 
         try {
@@ -255,7 +252,7 @@ public class TftpProtocol implements MessagingProtocol<byte[]>{
 
     public void addContentToFile(byte[] msg, int blockNum) {
 
-		String folderPath = "client/";	
+		String folderPath = "." + File.separator;	
 		Path filePath = Paths.get(folderPath,fileNameToDownload);
 		
 		for(int i = 5; i < msg.length; i++){
@@ -327,7 +324,7 @@ public class TftpProtocol implements MessagingProtocol<byte[]>{
     } 
         
     private boolean isFileExist(String fileName){
-        File file = new File("client/"+fileName);
+        File file = new File("." + File.separator+fileName);
         return file.exists();
     }
     
