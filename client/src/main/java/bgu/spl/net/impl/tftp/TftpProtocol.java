@@ -278,7 +278,7 @@ public class TftpProtocol implements MessagingProtocol<byte[]>{
     }
 
     public byte[] sendFile(int blockNum, int indexData){
-        String folderPath = "client";	
+        String folderPath =  "." + File.separator;	
         Path filePath = Paths.get(folderPath,fileNameToUpload);
         if(Files.exists(filePath)){
             try {

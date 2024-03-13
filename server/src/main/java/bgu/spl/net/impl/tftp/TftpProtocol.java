@@ -303,7 +303,7 @@ public class TftpProtocol implements BidiMessagingProtocol<byte[]>  {
         }
         else{
             connections.send(connectionId, ACKSend((short)0));         
-            nineSendBroadcast( fileName.getBytes() ,0); //check
+            nineSendBroadcast( fileName.getBytes() ,0); 
         }
     }
 

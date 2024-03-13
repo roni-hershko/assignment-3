@@ -17,6 +17,7 @@ public class BlockingConnectionHandlerClient implements Runnable {
     public final Socket sock;
     public BufferedInputStream in;
     public BufferedOutputStream out;
+	Object lock = new Object();
    
 
     public BlockingConnectionHandlerClient(Socket sock, TftpEncoderDecoder reader, TftpProtocol protocol, BufferedInputStream in, BufferedOutputStream out) {
@@ -42,6 +43,9 @@ public class BlockingConnectionHandlerClient implements Runnable {
                         protocol.process(ansFromServer);
                     }
                 }
+				synchronized(lock){
+					lock.notifyAll();
+				}
             }
             } catch (IOException ex) {
             ex.printStackTrace();
